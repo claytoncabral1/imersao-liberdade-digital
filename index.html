@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imersão Liberdade Digital - Clayton Cabral</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script>
+    (function(){
+      var DEBUG=false;
+      function log(){ if(DEBUG) try{console.log.apply(console, ['[assiny-utm]'].concat([].slice.call(arguments)));}catch(e){} }
+
+      function paramsFromLocation(){
+        return new URLSearchParams(window.location.search || '');
+      }
+
+      function hasParams(p){ try{ return Array.from(p.keys()).length>0; }catch(e){ return false; } }
+
+      function shouldSkip(el, url){
+        if(!url) return true;
+        if(el && el.hasAttribute && el.hasAttribute('data-no-utm')) return true;
+        var proto = url.protocol;
+        if(proto==='mailto:' || proto==='tel:' || proto==='javascript:') return true;
+        var host = (url.host||'').toLowerCase();
+        if(host==='wa.me' || host==='api.whatsapp.com') return true;
+        return false;
+      }
+
+      function mergeParams(url, srcParams){
+        try{
+          srcParams.forEach(function(v,k){ if(!url.searchParams.has(k)) url.searchParams.set(k,v); });
+        }catch(e){}
+      }
+
+      function rewriteNode(node, srcParams){
+        try{
+          if(!node || !srcParams) return;
+          if(node.tagName==='A' && node.href){
+            var u=new URL(node.href, window.location.href);
+            if(shouldSkip(node,u)) return;
+            mergeParams(u, srcParams);
+            node.href=u.toString();
+            log('link updated', node.href);
+          } else if(node.tagName==='FORM' && node.action){
+            var u=new URL(node.action, window.location.href);
+            if(shouldSkip(node,u)) return;
+            mergeParams(u, srcParams);
+            node.action=u.toString();
+            log('form action updated', node.action);
+          } else if(node.getAttribute && node.hasAttribute('data-href')){
+            var raw=node.getAttribute('data-href');
+            var u=new URL(raw, window.location.href);
+            if(shouldSkip(node,u)) return;
+            mergeParams(u, srcParams);
+            node.setAttribute('data-href', u.toString());
+            if(!node.hasAttribute('href')) node.setAttribute('href', u.toString());
+            log('data-href updated', node.getAttribute('data-href'));
+          }
+        }catch(e){}
+      }
+
+      function rewriteAll(){
+        var p=paramsFromLocation();
+        if(!hasParams(p)) return;
+        document.querySelectorAll('a, form, [data-href]').forEach(function(el){ rewriteNode(el,p); });
+      }
+
+      function onClickCapture(ev){
+        try{
+          var p=paramsFromLocation();
+          if(!hasParams(p)) return;
+          var el = ev.target && ev.target.closest ? ev.target.closest('a,[data-href]') : null;
+          if(!el) return;
+          rewriteNode(el, p);
+        }catch(e){}
+      }
+
+      function hookSpa(){
+        ['pushState','replaceState'].forEach(function(fn){
+          var _=history[fn];
+          history[fn]=function(){
+            var ret=_.apply(this, arguments);
+            try{ rewriteAll(); }catch(e){}
+            return ret;
+          };
+        });
+        window.addEventListener('popstate', function(){ try{ rewriteAll(); }catch(e){} });
+      }
+
+      var observer=null;
+      function observeDom(){
+        try{
+          observer = new MutationObserver(function(muts){
+            var p=paramsFromLocation();
+            if(!hasParams(p)) return;
+            muts.forEach(function(m){
+              m.addedNodes && m.addedNodes.forEach(function(n){
+                rewriteNode(n, p);
+                if(n.querySelectorAll){
+                  n.querySelectorAll('a, form, [data-href]').forEach(function(el){ rewriteNode(el, p); });
+                }
+              });
+            });
+          });
+          observer.observe(document.documentElement, {childList:true, subtree:true});
+        }catch(e){}
+      }
+
+      document.addEventListener('DOMContentLoaded', function(){
+        try{
+          rewriteAll();
+          observeDom();
+          hookSpa();
+          document.addEventListener('click', onClickCapture, true);
+          console.log('Assiny tracker: UTM propagation initialized');
+        }catch(e){}
+      });
+    })();
+    </script>
+    
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1116653683749771');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1116653683749771&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050816;
+            color: #E2E8F0;
+        }
+        .hero-bg {
+            background-color: #050816;
+            background-image:
+                radial-gradient(at 27% 37%, hsla(215, 98%, 61%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 97% 21%, hsla(125, 98%, 72%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 52% 99%, hsla(355, 98%, 76%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 10% 29%, hsla(256, 96%, 68%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 97% 96%, hsla(38, 60%, 74%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 33% 50%, hsla(222, 67%, 73%, 0.1) 0px, transparent 50%),
+                radial-gradient(at 79% 53%, hsla(343, 68%, 79%, 0.1) 0px, transparent 50%);
+        }
+        .glass-effect {
+            background: rgba(17, 25, 40, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .cta-button {
+            background: linear-gradient(90deg, #3B82F6 0%, #8B5CF6 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5), 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.8), 0 0 45px rgba(139, 92, 246, 0.5);
+        }
+        .text-gradient {
+            background: linear-gradient(90deg, #A5B4FC 0%, #C4B5FD 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .section-glow::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 100px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0) 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .faq-item[open] summary {
+            color: #8B5CF6;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Hero Section -->
+    <header class="hero-bg relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/30 z-0"></div>
+        <div class="container mx-auto px-6 py-20 md:py-32 relative z-10 text-center">
+            <h1 class="text-4xl md:text-6xl font-black uppercase tracking-wider text-white">
+                Imersão <span class="text-gradient">Liberdade Digital</span>
+            </h1>
+            <p class="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-slate-300">
+                Aprenda, na prática, a criar e vender produtos digitais Low Ticket usando Inteligência Artificial e conquiste uma renda online de forma simples e rápida.
+            </p>
+            <div class="mt-10">
+                <div class="inline-block glass-effect rounded-lg p-4 mb-8">
+                    <p class="text-xl font-bold text-white">
+                        <span class="text-2xl">👉</span> Dia <span class="text-gradient">27 de setembro (sábado), das 9h às 16h</span>
+                    </p>
+                    <p class="text-slate-300">Um dia inteiro ao vivo, mão na massa, para você sair com o seu produto pronto para vender.</p>
+                </div>
+                <div>
+                    <a href="#oferta" class="cta-button inline-block text-white font-bold text-lg px-10 py-4 rounded-full uppercase tracking-widest">
+                        Quero minha vaga agora
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Reforço da Promessa -->
+        <section class="py-16 md:py-24 bg-slate-900/50">
+            <div class="container mx-auto px-6 text-center max-w-4xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Chega de teoria. É hora da <span class="text-gradient">prática</span>.</h2>
+                <p class="mt-4 text-lg text-slate-300">
+                    Você já percebeu que todo mundo fala em “ganhar dinheiro na internet”… mas ninguém mostra o <strong class="text-white">caminho real e prático</strong>? Na Imersão Liberdade Digital você não vai ouvir teoria. Aqui você vai <strong class="text-white">construir seu produto junto comigo</strong>, usando os prompts certos e a Inteligência Artificial como parceira.
+                </p>
+                <div class="mt-10 glass-effect p-8 rounded-2xl inline-block">
+                     <p class="text-xl font-semibold text-white">⚡ O resultado? Você terá em mãos o seu primeiro <strong class="text-gradient">produto Low Ticket pronto para vender</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- O que você vai aprender -->
+        <section class="py-16 md:py-24 relative section-glow">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">O que você vai aprender na <span class="text-gradient">prática</span></h2>
+                    <p class="mt-4 text-slate-300">Durante as 6 horas de imersão, você vai dominar todo o processo, do zero à primeira venda.</p>
+                </div>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Item -->
+                    <div class="glass-effect p-8 rounded-2xl transform hover:scale-105 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-3xl mb-4 text-blue-400">✅</div>
+                        <h3 class="font-bold text-xl text-white mb-2">Lógica de um produto vencedor</h3>
+                        <p class="text-slate-400">Entender a lógica por trás de um produto Low Ticket que vende todos os dias.</p>
+                    </div>
+                     <!-- Item -->
+                    <div class="glass-effect p-8 rounded-2xl transform hover:scale-105 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-3xl mb-4 text-blue-400">✅</div>
+                        <h3 class="font-bold text-xl text-white mb-2">Prompts de IA validados</h3>
+                        <p class="text-slate-400">Aprender a usar prompts prontos para a IA criar a estrutura do seu produto.</p>
+                    </div>
+                     <!-- Item -->
+                    <div class="glass-effect p-8 rounded-2xl transform hover:scale-105 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-3xl mb-4 text-blue-400">✅</div>
+                        <h3 class="font-bold text-xl text-white mb-2">Definição Estratégica</h3>
+                        <p class="text-slate-400">Definir seu tema, público e promessa de forma irresistível.</p>
+                    </div>
+                     <!-- Item -->
+                    <div class="glass-effect p-8 rounded-2xl transform hover:scale-105 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-3xl mb-4 text-blue-400">✅</div>
+                        <h3 class="font-bold text-xl text-white mb-2">Criação de Conteúdo com IA</h3>
+                        <p class="text-slate-400">Construir os conteúdos e materiais do seu produto com ajuda da IA.</p>
+                    </div>
+                     <!-- Item -->
+                    <div class="glass-effect p-8 rounded-2xl transform hover:scale-105 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-3xl mb-4 text-blue-400">✅</div>
+                        <h3 class="font-bold text-xl text-white mb-2">Página de Vendas que Converte</h3>
+                        <p class="text-slate-400">Montar a página de vendas persuasiva para o seu produto.</p>
+                    </div>
+                     <!-- Item -->
+                    <div class="glass-effect p-8 rounded-2xl transform hover:scale-105 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-3xl mb-4 text-blue-400">✅</div>
+                        <h3 class="font-bold text-xl text-white mb-2">Plano de Vendas Rápido</h3>
+                        <p class="text-slate-400">Ter clareza de como colocar seu produto no ar e vender ainda em setembro.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conexão com a dor -->
+        <section class="py-16 md:py-24 bg-slate-900/50">
+            <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+                <div class="text-center md:text-left">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Isso soa familiar para <span class="text-gradient">você</span>?</h2>
+                    <ul class="mt-6 space-y-4 text-lg">
+                        <li class="flex items-start"><span class="text-blue-400 mr-3 mt-1">👉</span> Você é pai ou mãe e sente que o tempo com seus filhos está sempre sendo trocado pelo trabalho?</li>
+                        <li class="flex items-start"><span class="text-blue-400 mr-3 mt-1">👉</span> Ou talvez seja jovem, cansado da ideia de depender de um salário baixo e instável?</li>
+                        <li class="flex items-start"><span class="text-blue-400 mr-3 mt-1">👉</span> Ou busca uma renda extra, mas nunca soube por onde começar na internet?</li>
+                    </ul>
+                    <p class="mt-8 text-slate-300">Eu sei como é. Começar no digital pode parecer complicado, mas existe uma saída: <strong class="text-white">produtos digitais Low Ticket</strong>, criados de forma simples com Inteligência Artificial.</p>
+                </div>
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="glass-effect p-6 rounded-xl">
+                        <h4 class="font-bold text-xl text-white">✅ Mais tempo em casa</h4>
+                        <p class="text-slate-400">Conquiste a flexibilidade que você sempre sonhou.</p>
+                    </div>
+                    <div class="glass-effect p-6 rounded-xl">
+                        <h4 class="font-bold text-xl text-white">✅ Uma renda que cresce com você</h4>
+                        <p class="text-slate-400">Crie um ativo digital que trabalha para você 24/7.</p>
+                    </div>
+                    <div class="glass-effect p-6 rounded-xl">
+                        <h4 class="font-bold text-xl text-white">✅ Liberdade para viver do seu jeito</h4>
+                        <p class="text-slate-400">Assuma o controle da sua vida profissional e financeira.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Bio do Condutor -->
+        <section class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="glass-effect rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/3 text-center">
+                        <img src="https://storage.googleapis.com/gemini-prod-us-west1-assets/e690f0ca-7f05-4d04-a690-bdc8e597df66" alt="Clayton Cabral" class="rounded-full w-48 h-48 mx-auto object-cover border-4 border-blue-500/50 shadow-lg">
+                        <h3 class="mt-6 text-2xl font-bold text-white">Clayton Cabral</h3>
+                        <p class="text-slate-300">Seu mentor nesta jornada</p>
+                         <img src="https://storage.googleapis.com/gemini-prod-us-west1-assets/b21516e9-e31d-4034-b0f3-80b6736dd65b" alt="Logo Cabral Mídias" class="w-40 mx-auto mt-4">
+                    </div>
+                    <div class="md:w-2/3">
+                        <p class="text-lg text-slate-300 leading-relaxed">
+                            Nos últimos anos, participei diretamente da construção de <strong class="text-white">mais de 100 lançamentos digitais</strong> que juntos faturaram múltiplos 6 e 7 dígitos. Sou fundador da <strong class="text-white">Cabral Mídias</strong>, agência especializada em tráfego, automação e inteligência de dados para infoprodutos.
+                        </p>
+                        <p class="mt-4 text-lg text-slate-300 leading-relaxed">
+                            Além de ajudar experts a venderem milhões, eu também construí meus próprios produtos digitais, como o <strong class="text-white">Robô de Petições</strong>, que hoje gera vendas diárias no automático com ROI constante.
+                        </p>
+                        <p class="mt-6 text-xl font-semibold text-gradient">
+                            Agora, quero abrir os bastidores e mostrar como qualquer pessoa pode criar um produto Low Ticket usando IA e começar sua jornada no digital com o pé direito.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Oferta -->
+        <section id="oferta" class="py-16 md:py-24 hero-bg">
+            <div class="container mx-auto px-6 text-center">
+                <div class="glass-effect max-w-3xl mx-auto p-8 md:p-12 rounded-2xl shadow-2xl shadow-blue-500/10">
+                    <h2 class="text-3xl md:text-4xl font-black uppercase text-white">Acesso Imediato à <span class="text-gradient">Imersão</span></h2>
+                    <div class="mt-6 text-left space-y-4 text-lg">
+                        <p><strong class="text-blue-300">📌 Data:</strong> 27 de setembro (sábado)</p>
+                        <p><strong class="text-blue-300">⏰ Horário:</strong> 9h às 16h (com intervalo para almoço)</p>
+                        <p><strong class="text-blue-300">🖥️ Formato:</strong> Ao vivo, online e prático</p>
+                    </div>
+                    <div class="mt-8 bg-blue-900/30 p-6 rounded-lg border border-blue-500/30">
+                        <h4 class="text-xl font-bold text-white">🎁 Bônus Especial</h4>
+                        <p class="text-slate-300 mt-2">Todos os participantes receberão meu <strong class="text-white">Kit de Prompts Low Ticket</strong>, para acelerar a criação de seus produtos.</p>
+                    </div>
+                    <div class="my-8">
+                        <p class="text-lg text-slate-300">Seu investimento para destravar sua liberdade digital é de apenas:</p>
+                        <p class="text-7xl font-black text-white my-2">R$47</p>
+                    </div>
+                    <a href="https://pay.assiny.com.br/396929/node/2K4vwF" class="cta-button inline-block text-white font-bold text-xl px-12 py-5 rounded-full uppercase tracking-widest w-full md:w-auto">
+                        Garantir minha vaga por R$47
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- FAQ -->
+        <section class="py-16 md:py-24">
+             <div class="container mx-auto px-6 max-w-3xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-white text-center mb-12">
+                    Perguntas <span class="text-gradient">Frequentes</span>
+                </h2>
+                <div class="space-y-4">
+                    <details class="faq-item glass-effect p-6 rounded-lg cursor-pointer">
+                        <summary class="font-semibold text-lg text-white list-none flex justify-between items-center">
+                            Preciso ter experiência no digital?
+                            <svg class="w-5 h-5 transform transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <p class="mt-4 text-slate-300">
+                            Não. A imersão foi feita para iniciantes que querem começar do zero.
+                        </p>
+                    </details>
+                    <details class="faq-item glass-effect p-6 rounded-lg cursor-pointer">
+                        <summary class="font-semibold text-lg text-white list-none flex justify-between items-center">
+                            Preciso saber usar Inteligência Artificial?
+                            <svg class="w-5 h-5 transform transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <p class="mt-4 text-slate-300">
+                            Também não. Eu vou te ensinar, do básico ao avançado, os prompts que você vai usar.
+                        </p>
+                    </details>
+                    <details class="faq-item glass-effect p-6 rounded-lg cursor-pointer">
+                        <summary class="font-semibold text-lg text-white list-none flex justify-between items-center">
+                            Vou sair da imersão com meu produto pronto?
+                             <svg class="w-5 h-5 transform transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <p class="mt-4 text-slate-300">
+                            Sim. Essa é a proposta: sair com tudo pronto para colocar no ar e vender.
+                        </p>
+                    </details>
+                     <details class="faq-item glass-effect p-6 rounded-lg cursor-pointer">
+                        <summary class="font-semibold text-lg text-white list-none flex justify-between items-center">
+                           E se eu não puder assistir ao vivo?
+                            <svg class="w-5 h-5 transform transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <p class="mt-4 text-slate-300">
+                           Sim, você terá acesso à gravação em formato de curso na página de inscrição. Mas eu recomendo fortemente que esteja presente no ao vivo: é durante o encontro que você poderá tirar dúvidas em tempo real e aproveitar uma experiência educacional muito mais completa.
+                        </p>
+                    </details>
+                     <details class="faq-item glass-effect p-6 rounded-lg cursor-pointer">
+                        <summary class="font-semibold text-lg text-white list-none flex justify-between items-center">
+                            Por que custa só R$47?
+                             <svg class="w-5 h-5 transform transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </summary>
+                        <p class="mt-4 text-slate-300">
+                            Porque essa é uma imersão de entrada, feita para dar acesso a todos. Mas o conteúdo é prático e valioso, como se fosse um treinamento de centenas de reais.
+                        </p>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-8 bg-slate-900/50">
+        <div class="container mx-auto px-6 text-center text-slate-400">
+            <p>&copy; 2024 Cabral Mídias. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Pequeno script para rotação do ícone do FAQ
+        document.querySelectorAll('details').forEach(detail => {
+            detail.addEventListener('toggle', event => {
+                const summary = event.target.querySelector('summary');
+                const icon = summary.querySelector('svg');
+                if (event.target.open) {
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
